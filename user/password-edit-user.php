@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 if(!isset($_GET["id"])){
     echo "使用者不存在";
     exit;
@@ -103,7 +103,7 @@ $row=$result->fetch_assoc();
       <a class="nav-link" aria-current="page" href="#">首頁</a>
       <a class="nav-link" href="#">藝術品</a>
       <a class="nav-link" href="#">畫家</a>
-      <a class="nav-link active" href="#">會員</a>
+      <a class="nav-link active" href="../user/dashboard.php">會員</a>
       <a class="nav-link" href="#">訂單</a>
       <a class="nav-link" href="#">展覽空間</a>
     </div>
@@ -120,7 +120,7 @@ $row=$result->fetch_assoc();
           <h1 class="py-2 d-flex justify-content-center text-white">會員</h1>
           <hr>
             <li class="active"><a href="../user/users.php" class="px-3 py-2"> <i class="fa-solid fa-gauge fa-fw"></i>會員資料</a></li>            
-            <li><a href="" class="px-3 py-2"><i class="fa-regular fa-file-lines fa-fw"></i>訂單管理</a></li>
+            <li><a href="../product/order-list.php?user_id=<?=$_SESSION["user"]["id"]?>" class="px-3 py-2"><i class="fa-regular fa-file-lines fa-fw"></i>訂單檢視</a></li>
             <li><a href="" class="px-3 py-2"><i class="fa-solid fa-user"></i>折扣卷</a></li>
             <li><a href="../product/product-list2.php" class="px-3 py-2"><i class="fa-solid fa-cart-shopping"></i>藝術品</a></li>
             <li><a href="" class="px-3 py-2"><i class="fa-solid fa-chart-simple"></i>我的收藏</a></li>

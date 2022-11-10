@@ -145,7 +145,7 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
       <a class="nav-link" href="#">首頁</a>
       <a class="nav-link" href="../product/product-list2.php">藝術品</a>
       <a class="nav-link" href="../seller/sellers.php">畫家</a>
-      <a class="nav-link" href="../user/users.php">會員</a>
+      <a class="nav-link" href="../user/dashboard.php">會員</a>
       <a class="nav-link" href="../product/order-list.php">訂單</a>
       <a class="nav-link active" href="../user/product-list2.php">展覽空間</a>
     </div>
