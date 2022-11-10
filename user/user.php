@@ -115,28 +115,28 @@ $row=$result->fetch_assoc();
       <!-- <div class="pt-2 px-3 pb-2 d-flex justify-content-center text-white">
         Welcome <?=$_SESSION["user"]["account"]?> !
       </div> -->
-        <ul class="list-unstyled">
+      <ul class="list-unstyled">
           <h1 class="py-2 d-flex justify-content-center text-white">會員</h1>
           <hr class="text-white">
-            <li class="active"><a href="#" class="px-3 py-2"> <i class="fa-solid fa-gauge fa-fw"></i>會員資料</a></li>            
-            <li><a href="../product/order-list.php?user_id=<?=$_SESSION["user"]["id"]?>" class="px-3 py-2"><i class="fa-regular fa-file-lines fa-fw"></i>訂單檢視</a></li>
-            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-user"></i>折扣卷</a></li>
-            <li><a href="../product/product-list2.php" class="px-3 py-2"><i class="fa-solid fa-cart-shopping"></i>藝術品</a></li>
-            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-chart-simple"></i>我的收藏</a></li>
+            <li><a href="../user/users.php" class="px-3 py-2"> <i class="fa-solid fa-user fa-fw"></i>會員資料列表</a></li>
+            <li class="active"><a href="../user/user.php?id=<?=$_SESSION["user"]["id"]?>" class="px-3 py-2"> <i class="fa-solid fa-face-smile fa-fw"></i>會員個人資料</a></li>               
+            <li><a href="../user/user-order-detail.php?id=<?=$_SESSION["user"]["id"]?>" class="px-3 py-2"><i class="fa-regular fa-file-lines fa-fw"></i>個人訂單檢視</a></li>
+            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-barcode"></i>折扣卷</a></li>
+            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-heart"></i>我的收藏</a></li>
         </ul>
         
     </nav>
   </aside>
   <main class="main-content">
     <div class="d-flex justify-content-between">
-        <h3>使用者列表</h3>
+        <h3>個人資料</h3>
     
     </div>
         
     <div class="container">
-    <div class="py-2">
+    <!-- <div class="py-2">
         <a class="btn btn-secondary" href="users.php">User List</a>
-    </div>
+    </div> -->
     <?php if($userCount==0): ?>
         使用者不存在
     <?php else: ?>
