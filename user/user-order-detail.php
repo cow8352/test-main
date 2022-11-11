@@ -124,7 +124,7 @@ $row = $result->fetch_assoc();
             <a class="nav-link" href="../seller/sellers.php">畫家</a>
             <a class="nav-link active" href="../user/dashboard.php">會員</a>
             <a class="nav-link" href="../product/order-list.php">訂單</a>
-            <a class="nav-link" href="../user/product-list2.php">展覽空間</a>
+            <a class="nav-link" href="../space/space.php">展覽空間</a>
         </div>
         <div class="position-absolute top-0 end-0">
             <a class="btn btn-dark text-nowrap" href="logout.php">Sign out</a>

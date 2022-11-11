@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 if(!isset($_SESSION["user"])){
@@ -8,8 +7,32 @@ if(!isset($_SESSION["user"])){
 //如果登出，回到login這一頁
 
 require_once("../db2-connect.php");
+//分三類北中南
+$category = "";
+$sqlCategory = "SELECT * FROM category2 ORDER BY id ASC";
+$resultCategory = $conn->query($sqlCategory);
+$rowsCategory = $resultCategory->fetch_all(MYSQLI_ASSOC);
 
-$sql = "SELECT * FROM product2 WHERE valid=1";
+
+if (isset($_GET["category"])) {
+  $category = $_GET["category"];
+
+  $sql = "SELECT space.*, category2.name AS category2_name FROM space
+      JOIN category2 ON space.category = category2.id WHERE space.category=$category";
+} else {
+  $sql = "SELECT space.*, category2.name AS category2_name FROM space
+      JOIN category2 ON space.category = category2.id";
+}
+
+$result = $conn->query($sql);
+$productCount = $result->num_rows;
+$rows = $result->fetch_all(MYSQLI_ASSOC);
+
+// var_dump($rowsCategory);
+// exit;
+
+
+$sql = "SELECT * FROM space WHERE valid=1";
 
 $result = $conn->query($sql);
 $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -19,7 +42,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
 
 if(isset($_GET["search"])){
   $search=$_GET["search"];
-  $sql="SELECT * FROM product2 WHERE name LIKE '%$search%' AND valid=1 ORDER BY id DESC";
+  $sql="SELECT * FROM space WHERE name LIKE '%$search%' AND valid=1 ORDER BY id DESC";
   $result=$conn->query($sql);
   $userCount=$result->num_rows;
 
@@ -27,27 +50,52 @@ if(isset($_GET["search"])){
 
   if(isset($_GET["page"])){
     $page=$_GET["page"];
+    
   }else{
     $page=1;
   }
 
-    $sqlAll="SELECT * FROM product2 WHERE valid=1 ";
-    $resultAll=$conn->query($sqlAll);
-    $userCount=$resultAll->num_rows;
+    // $sqlAll="SELECT * FROM space WHERE valid=1 ";
+    // $resultAll=$conn->query($sqlAll);
+    // $userCount=$resultAll->num_rows;
 
   $per_page=8;
   $page_start=($page-1)*$per_page;
 
-  $sql="SELECT * FROM product2 ORDER BY id DESC LIMIT $page_start, $per_page";
+
+
+  if (isset($_GET["category"])) {
+    $pageCategory = $_GET["category"];
+    $sql = "SELECT * FROM `space` WHERE `category` =  " . $_GET["category"] . " ORDER BY `id` DESC LIMIT $page_start, $per_page";
+    $sqlAll = "SELECT * FROM `space` WHERE `category` =  " . $_GET["category"] . " ORDER BY `id` DESC";
+    $resultAll = $conn->query($sqlAll);
+    $userCount = $resultAll->num_rows;
+  } else {
+    $sql = "SELECT * FROM `space` ORDER BY `id` DESC
+    LIMIT $page_start, $per_page";
+    $sqlAll = "SELECT * FROM `space` ORDER BY `id` ASC ";
+    $resultAll = $conn->query($sqlAll);
+    $userCount = $resultAll->num_rows;
+  }
+
+
+
+
+
+
+  // $sql="SELECT * FROM space ORDER BY id DESC LIMIT $page_start, $per_page";
 
   $result=$conn->query($sql);
 
 //計算頁數
 $totalPage=ceil($userCount/$per_page);  //無條件進位
-
 }
-
+// $totalPage_category =
 $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
+
+
+
+
 
 
 // var_dump($userCount);
@@ -147,7 +195,7 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
       <a class="nav-link" href="../seller/sellers.php">畫家</a>
       <a class="nav-link" href="../user/dashboard.php">會員</a>
       <a class="nav-link" href="../product/order-list.php">訂單</a>
-      <a class="nav-link active" href="../user/product-list2.php">展覽空間</a>
+      <a class="nav-link active" href="../space/space.php">展覽空間</a>
     </div>
     <div class="position-absolute top-0 end-0">
       <a class="btn btn-dark text-nowrap" href="logout.php">Sign out</a>
@@ -161,12 +209,7 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
         <ul class="list-unstyled ">
           <h1 class="py-2 d-flex justify-content-center text-white">展覽空間</h1>
           <hr class="text-white">
-            <li class="active"><a href="../user/product-list2.php" class="px-3 py-2"> <i class="fa-solid fa-house fa-fw"></i>空間</a></li>            
-            <!-- <li><a href="" class="px-3 py-2"><i class="fa-regular fa-file-lines fa-fw"></i>訂單管理</a></li>
-            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-user"></i>折扣卷</a></li>
-            <li><a href="../product/product-list2.php" class="px-3 py-2"><i class="fa-solid fa-cart-shopping"></i>藝術品</a></li>
-            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-chart-simple"></i>我的收藏</a></li>
-            <li><a href="" class="px-3 py-2"><i class="fa-solid fa-layer-group"></i>變更密碼</a></li> -->
+            <li class="active"><a href="../space/space.php" class="px-3 py-2"> <i class="fa-solid fa-house fa-fw"></i>空間</a></li>            
         </ul>
         
     </nav>
@@ -176,10 +219,25 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
         <h3>展覽空間</h3>
     
     </div>
+    <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link <?php if (!isset($_GET["category"])) echo "active"; ?>" aria-current="page" href="space.php">全部</a>
+            </li>
+            <!--  -->
+            <?php foreach ($rowsCategory as $category) : ?>
+              
+              <li class="nav-item">
+                <a class="nav-link" <?php if (isset($_GET["category"]) && $_GET["category"] == $category["id"]) echo "active"; ?> href="space.php?category=<?= $category["id"] ?>"> <?= $category["name"] ?> </a>
+              </li>
+            <?php endforeach; ?>
+            <!--  -->
+          </ul>
+
+
 
   <div class="container">
     <div class="py-2">
-      <form action="product-list2.php" method="get">
+      <form action="space.php" method="get">
         <div class="input-group">
           <input type="text" class="form-control" name="search">
           <button type="submit" class="btn btn-secondary">搜尋</button>
@@ -189,7 +247,7 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
 
     <?php if(isset($_GET["search"])): ?>
       <div class="py-2">
-        <a class="btn btn-secondary" href="product-list2.php">回列表</a>
+        <a class="btn btn-secondary" href="space.php">回列表</a>
       </div>
       <h1><?=$_GET["search"]?>的搜尋結果</h1>
     <?php endif; ?>
@@ -199,14 +257,30 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
       </div>
     <div class="row g-3">
       <?php foreach ($rows as $exhibition) : ?>
+
+
         <div class="col-lg-3 col-md-6">
           <div class="card position-relative">
             <h3 class="mt-2 mb-2 text-center h4"><?= $exhibition["name"] ?></h3>
             <figure class="ratio ratio-16x9">
-              <img class="object-cover" src="../images/<?= $exhibition["img"] ?>" alt="">
+              <img class="object-cover" src="images/<?= $exhibition["img"] ?>" alt="">
 
             </figure>
             <div class="px-3 pb-4">
+            <div class="pb-2 text-primary">
+                        <a href="space.php?category=<?= $exhibition["category"] ?>">
+                          <?php
+                          if ($exhibition["category"] == "1") {
+                            echo "北";
+                          } elseif ($exhibition["category"] == "2") {
+                            echo "中";
+                          } elseif ($exhibition["category"] == "3") {
+                            echo "南";
+                          }
+                          ?>
+
+                        </a>
+                      </div>
               <h6 class="text-center h6"><?= $exhibition["introduction"] ?></h6>
               <div class="text-end"> <a href="#">詳細介紹</a></div>
               <hr>
@@ -221,7 +295,7 @@ $rows=$result->fetch_all(MYSQLI_ASSOC);  //關聯式陣列
           <ul class="pagination">
             <?php for ($i = 1; $i <= $totalPage ; $i++) : ?>
               <li class="page-item <?php if ($i == $page) echo "active"; ?>">
-              <a class="page-link" href="product-list2.php?page=<?= $i ?>"><?= $i ?></a></li>
+              <a class="page-link" href="space.php?page=<?= $i ?>"><?= $i ?></a></li>
             <?php endfor; ?>
           </ul>
         </nav>
