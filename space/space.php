@@ -79,10 +79,6 @@ if(isset($_GET["search"])){
   }
 
 
-
-
-
-
   // $sql="SELECT * FROM space ORDER BY id DESC LIMIT $page_start, $per_page";
 
   $result=$conn->query($sql);
