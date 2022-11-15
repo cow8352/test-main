@@ -217,7 +217,7 @@ $totalPage_category =
               <div class="row align-items-center g-2">
                 <?php if (isset($_GET["min"])) : ?>
                   <div class="col-auto">
-                    <a class="btn btn-info" href="product-list2.php">Back</a>
+                    <a class="btn btn-info" href="buyer-product-list.php">Back</a>
                   </div>
                 <?php endif; ?>
                 <div class="col-auto">
